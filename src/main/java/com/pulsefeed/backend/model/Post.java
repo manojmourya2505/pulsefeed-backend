@@ -2,9 +2,12 @@ package com.pulsefeed.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "posts")
+@Data
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -21,8 +24,6 @@ public class Post {
     @JoinColumn(name = "user_id",nullable = false)
     @JsonIgnore
     private User user;
-
-    public Post(){}
 
     public Post(String imageUrl,String caption,User user){
         this.imageUrl = imageUrl;
