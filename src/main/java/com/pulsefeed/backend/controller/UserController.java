@@ -32,10 +32,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
-        boolean isAuthenticated = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+        String token = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
-        if (isAuthenticated){
-            return ResponseEntity.ok("Login successful!");
+        if (token != null){
+            return ResponseEntity.ok("Bearer token : "+token);
         }else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email or password");
         }
