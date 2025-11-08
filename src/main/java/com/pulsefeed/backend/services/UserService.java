@@ -21,20 +21,23 @@ public class UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-    public User registerUser(User user){
+    public User registerUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-    public String loginUser(String email,String password){
+    public String loginUser(String email, String password) {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (bCryptPasswordEncoder.matches(password,user.getPassword())){
+            if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
                 return jwtUtil.generateToken(email);
+            } else {
+                throw new RuntimeException("Invalid password!");
             }
+        } else {
+            throw new RuntimeException("User not found!");
         }
-        return null;
     }
 }
