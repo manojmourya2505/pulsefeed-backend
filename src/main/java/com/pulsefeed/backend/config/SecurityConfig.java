@@ -22,13 +22,13 @@ public class SecurityConfig {
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/users/register",
-                                "api/users/login",
-                                "/api/test",
-                                "/actuator/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(
+//                                "/api/users/register",
+//                                "api/users/login",
+//                                "/api/test",
+//                                "/actuator/**"
+//                        ).permitAll()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(
                         sess ->
