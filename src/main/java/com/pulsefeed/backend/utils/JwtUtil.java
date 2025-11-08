@@ -1,6 +1,7 @@
 package com.pulsefeed.backend.utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -13,32 +14,38 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expirationTime = 86400000;
+    private final String SECRET_KEY = "X9v4mTzB2Fq8LrYjWc6nZsQpR3tHkVb5N7dE0aGxU2iP4oC1";
+    private final long EXPIRATION_TIME = 1000 * 60 * 60;
+
+    private Key getSigningKey(){
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
 
     public String generateToken(String email){
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(key)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey(),SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractEmail(String token){
-        return getClaims(token).getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean isValidToken(String token){
-        return !getClaims(token).getExpiration().before(new Date());
-    }
-
-    private Claims getClaims(String token){
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            return true;
+        }catch (JwtException jwtException){
+            return false;
+        }
     }
 
 }
