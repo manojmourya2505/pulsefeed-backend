@@ -3,6 +3,7 @@ package com.pulsefeed.backend.controller;
 import com.pulsefeed.backend.dto.LoginRequest;
 import com.pulsefeed.backend.model.User;
 import com.pulsefeed.backend.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user){
+    public ResponseEntity<String> register(@Valid @RequestBody User user){
         try {
             User registerUser = userService.registerUser(user);
             return ResponseEntity.ok("User registered successfully!");
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest){
         String token = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
         if (token != null){

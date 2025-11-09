@@ -1,6 +1,8 @@
 package com.pulsefeed.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -18,12 +20,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Email(message = "Invalid Email format")
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
+    @NotBlank(message = "Password cannot be empty")
     @Column(nullable = false)
     private String password;
 

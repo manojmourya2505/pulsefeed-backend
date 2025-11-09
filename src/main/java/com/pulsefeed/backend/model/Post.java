@@ -2,6 +2,7 @@ package com.pulsefeed.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -14,10 +15,11 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Image url cannot be black")
     private String imageUrl;
 
-    @Column(nullable = false, length = 500)
+    @NotBlank(message = "Caption cannot be empty")
+    @Column(length = 500)
     private String caption;
 
     @ManyToOne(fetch = FetchType.LAZY)
