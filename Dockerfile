@@ -1,14 +1,33 @@
-# Step 1: Use an official JDK runtime as base
-FROM eclipse-temurin:21-jdk
+# ====== STAGE 1: Build the JAR ======
+FROM eclipse-temurin:21-jdk AS builder
 
-# Step 2: Set working directory inside container
+# Set working directory
 WORKDIR /app
 
-# Step 3: Copy the jar file into the container
-COPY target/backend-0.0.1-SNAPSHOT.jar app.jar
+# Copy Maven config files first
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
 
-# Step 4: Expose port 8080 to the outside world
+# Download dependencies (for faster builds)
+RUN ./mvnw dependency:go-offline
+
+# Copy the rest of the project files
+COPY src ./src
+
+# Build the JAR (skip tests to save time)
+RUN ./mvnw clean package -DskipTests
+
+# ====== STAGE 2: Run the application ======
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+# Copy the built JAR from previous stage
+COPY --from=builder /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose port 8080
 EXPOSE 8080
 
-# Step 5: Run the jar file
+# Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
