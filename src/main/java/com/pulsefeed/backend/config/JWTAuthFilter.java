@@ -44,7 +44,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         if (email != null && jwtUtil.isValidToken(token)){
             UsernamePasswordAuthenticationToken authenticationFilter =
                     new UsernamePasswordAuthenticationToken(
-                            new User(email, "", new ArrayList<>()),
+                            email,
                             null,
                             new ArrayList<>()
                     );
