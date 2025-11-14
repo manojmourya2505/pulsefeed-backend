@@ -21,7 +21,7 @@ public class DataSeeder {
             if (userRepository.count() == 0){
                 User user = new User();
                 user.setEmail("timcook@gmail.com");
-                user.setUserName("Tim Cook");
+                user.setUsername("Tim Cook");
                 user.setPassword("123456789");
                 userRepository.save(user);
 
